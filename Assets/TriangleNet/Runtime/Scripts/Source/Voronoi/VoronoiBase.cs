@@ -37,7 +37,7 @@ namespace TriangleNet.Voronoi
         /// <param name="generate">If set to true, the constuctor will call the Generate
         /// method, which builds the Voronoi diagram.</param>
         protected VoronoiBase(TriangleNetMesh triangleNetMesh, IVoronoiFactory factory, IPredicates predicates,
-            bool generate)
+            bool generate, bool barycentric = false)
             : base(false)
         {
             this.factory = factory;
@@ -45,7 +45,7 @@ namespace TriangleNet.Voronoi
 
             if (generate)
             {
-                Generate(triangleNetMesh);
+                Generate(triangleNetMesh, barycentric);
             }
         }
 
@@ -54,7 +54,7 @@ namespace TriangleNet.Voronoi
         /// </summary>
         /// <param name="triangleNetMesh"></param>
         /// <param name="bounded"></param>
-        protected void Generate(TriangleNetMesh triangleNetMesh)
+        protected void Generate(TriangleNetMesh triangleNetMesh, bool barycentric)
         {
             triangleNetMesh.Renumber();
 
@@ -73,7 +73,15 @@ namespace TriangleNet.Voronoi
             factory.Initialize(vertices.Length, 2 * triangleNetMesh.NumberOfEdges, faces.Length);
 
             // Compute triangles circumcenters.
-            var map = ComputeVertices(triangleNetMesh, vertices);
+            var map = new List<HalfEdge>[] { };
+            if (barycentric)
+            {
+                map = ComputeVertices(triangleNetMesh, vertices);
+            }
+            else
+            {
+                map = ComputeVertices(triangleNetMesh, vertices, true);
+            }
 
             // Create all Voronoi faces.
             foreach (var vertex in triangleNetMesh.vertices.Values)
@@ -112,6 +120,42 @@ namespace TriangleNet.Voronoi
                 tri.tri = t;
 
                 pt = predicates.FindCircumcenter(tri.Org(), tri.Dest(), tri.Apex(), ref xi, ref eta);
+
+                vertex = factory.CreateVertex(pt.x, pt.y);
+                vertex.id = id;
+
+                vertices[id] = vertex;
+                map[id] = new List<HalfEdge>();
+            }
+
+            return map;
+        }
+
+        /// <summary>
+        /// Compute the Voronoi vertices (the circumcenters of the triangles).
+        /// </summary>
+        /// <returns>An empty map, which will map all vertices to a list of leaving edges.</returns>
+        protected List<HalfEdge>[] ComputeVertices(TriangleNetMesh triangleNetMesh, Vertex[] vertices, bool barycentric)
+        {
+            Otri tri = default(Otri);
+            float xi = 0, eta = 0;
+            Vertex vertex;
+            Point pt;
+            int id;
+
+            // Maps all vertices to a list of leaving edges.
+            var map = new List<HalfEdge>[triangleNetMesh.triangles.Count];
+
+            // Compue triangle circumcenters
+            foreach (var t in triangleNetMesh.triangles)
+            {
+                id = t.id;
+                tri.tri = t;
+
+                if (barycentric)
+                    pt = predicates.FindBarycenter(t.vertices[0], t.vertices[1], t.vertices[2]);
+                else
+                    pt = predicates.FindCircumcenter(tri.Org(), tri.Dest(), tri.Apex(), ref xi, ref eta);
 
                 vertex = factory.CreateVertex(pt.x, pt.y);
                 vertex.id = id;

@@ -448,6 +448,23 @@ namespace TriangleNet
             return new Point(org.x + dx, org.y + dy);
         }
 
+        /// <summary>
+        /// Find the barycenter of a triangle.
+        /// </summary>
+        /// <param name="vert1">Triangle vertex.</param>
+        /// <param name="vert2">Triangle vertex.</param>
+        /// <param name="vert3">Triangle vertex.</param>
+        /// <returns>Coordinates of the geometrical center of the triangle</returns>
+        /// <remarks>
+        /// THIS IS A USER EXTENTION FOR THIS LIBRARY.
+        /// Instad of calculating circumcenter, this function calculates a geometrical
+        /// center of a triangle, allowing to generate Barycentric dual meshes.
+        /// </remarks>
+        public Point FindBarycenter(Vertex vert1, Vertex vert2, Vertex vert3)
+        {
+            return new Point((vert1.X + vert2.X + vert3.X)/3f, (vert1.Y + vert2.Y + vert3.Y) / 3f);
+        }
+
         #region Exact arithmetics
 
         /// <summary>

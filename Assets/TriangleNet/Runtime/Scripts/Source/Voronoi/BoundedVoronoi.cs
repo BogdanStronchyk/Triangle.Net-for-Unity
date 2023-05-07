@@ -39,6 +39,38 @@ namespace TriangleNet.Voronoi
             ResolveBoundaryEdges();
         }
 
+        public BoundedVoronoi(TriangleNetMesh triangleNetMesh, bool barycentric)
+            : base(triangleNetMesh, new DefaultVoronoiFactory(), RobustPredicates.Default, barycentric)
+        {
+            // We explicitly told the base constructor to call the Generate method, so
+            // at this point the basic Voronoi diagram is already created.
+            offset = base.vertices.Count;
+
+            // Each vertex of the hull will be part of a Voronoi cell.
+            base.vertices.Capacity = offset + triangleNetMesh.hullsize;
+
+            // Create bounded Voronoi diagram.
+            PostProcess();
+
+            ResolveBoundaryEdges();
+        }
+
+        public BoundedVoronoi(TriangleNetMesh triangleNetMesh, IVoronoiFactory factory, IPredicates predicates, bool barycentric)
+            : base(triangleNetMesh, factory, predicates, true, barycentric)
+        {
+            // We explicitly told the base constructor to call the Generate method, so
+            // at this point the basic Voronoi diagram is already created.
+            offset = base.vertices.Count;
+
+            // Each vertex of the hull will be part of a Voronoi cell.
+            base.vertices.Capacity = offset + triangleNetMesh.hullsize;
+
+            // Create bounded Voronoi diagram.
+            PostProcess();
+
+            ResolveBoundaryEdges();
+        }
+
         /// <summary>
         /// Computes edge intersections with mesh boundary edges.
         /// </summary>

@@ -97,7 +97,6 @@ namespace TriangleNet.Smoothing
         private void Step(TriangleNetMesh triangleNetMesh, IVoronoiFactory factory, IPredicates predicates)
         {
             var voronoi = new BoundedVoronoi(triangleNetMesh, factory, predicates);
-
             float x, y;
 
             foreach (var face in voronoi.Faces)
