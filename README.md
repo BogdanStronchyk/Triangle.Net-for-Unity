@@ -1,5 +1,5 @@
 # Triangle.Net-for-Unity
-Fork from Nox7atra original repo. Some modifications to voronoi diagram creations were made, permitting to do barycentric dual meshes
+Fork from Nox7atra original repo. Some modifications to voronoi diagram creation were made, permitting to do barycentric dual meshes
 Установка через Unity Package Manager / Add package from git URL: https://github.com/BogdanStronchyk/Triangle.Net-for-Unity.git?path=/Assets/TriangleNet
 
 Article about (rus): https://habr.com/post/435374/
