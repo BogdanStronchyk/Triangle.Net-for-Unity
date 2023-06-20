@@ -56,7 +56,7 @@ namespace TriangleNet.Voronoi
         }
 
         public BoundedVoronoi(TriangleNetMesh triangleNetMesh, IVoronoiFactory factory, IPredicates predicates, bool barycentric)
-            : base(triangleNetMesh, factory, predicates, true, barycentric)
+            : base(triangleNetMesh, factory, predicates, true)
         {
             // We explicitly told the base constructor to call the Generate method, so
             // at this point the basic Voronoi diagram is already created.
