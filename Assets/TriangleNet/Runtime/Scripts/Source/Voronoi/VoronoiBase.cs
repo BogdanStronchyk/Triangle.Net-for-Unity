@@ -76,11 +76,11 @@ namespace TriangleNet.Voronoi
             var map = new List<HalfEdge>[] { };
             if (barycentric)
             {
-                map = ComputeVertices(triangleNetMesh, vertices);
+                map = ComputeVertices(triangleNetMesh, vertices, barycentric);
             }
             else
             {
-                map = ComputeVertices(triangleNetMesh, vertices, true);
+                map = ComputeVertices(triangleNetMesh, vertices);
             }
 
             // Create all Voronoi faces.
